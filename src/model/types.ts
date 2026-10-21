@@ -52,6 +52,8 @@ export interface Settings {
   maxGapMinutes: number;
   /** This many beats in a row at the same intensity reads as flat. */
   flatBeats: number;
+  /** This many beats of the same kind in a row reads as repetitive. Older files leave it out; 3 is assumed. */
+  sameKindBeats?: number;
 }
 
 export interface Project {

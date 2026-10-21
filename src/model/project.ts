@@ -5,7 +5,7 @@ export function uid(): string {
 }
 
 export function defaultSettings(): Settings {
-  return { restAtMost: 2, maxMinutesWithoutRest: 45, maxNewPerBeat: 2, maxGapMinutes: 45, flatBeats: 4 };
+  return { restAtMost: 2, maxMinutesWithoutRest: 45, maxNewPerBeat: 2, maxGapMinutes: 45, flatBeats: 4, sameKindBeats: 3 };
 }
 
 export function newBeat(title = 'New beat', act = ''): Beat {
@@ -121,4 +121,6 @@ export function assertProject(data: unknown): asserts data is Project {
   check(isObject(s), 'settings', 'is missing');
   for (const key of ['restAtMost', 'maxMinutesWithoutRest', 'maxNewPerBeat', 'maxGapMinutes', 'flatBeats'] as const)
     check(typeof s[key] === 'number', `settings.${key}`, 'is not a number');
+  // Added later; older files don't have it.
+  if (s.sameKindBeats !== undefined) check(typeof s.sameKindBeats === 'number', 'settings.sameKindBeats', 'is not a number');
 }

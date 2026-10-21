@@ -75,6 +75,7 @@ const SETTINGS: { key: keyof Settings; label: string; hint: string }[] = [
   { key: 'maxNewPerBeat', label: 'Max new elements per beat', hint: 'More teaching than this in one beat is flagged' },
   { key: 'maxGapMinutes', label: 'Max minutes an element goes unused', hint: 'Players start forgetting after this' },
   { key: 'flatBeats', label: 'Beats at one intensity = flat', hint: 'This many in a row is flagged' },
+  { key: 'sameKindBeats', label: 'Same kind of beat in a row', hint: 'This many of one type back to back is flagged' },
 ];
 
 export function SettingsPanel() {
@@ -91,7 +92,7 @@ export function SettingsPanel() {
               className="short"
               min={0}
               step={1}
-              value={settings[s.key]}
+              value={settings[s.key] ?? 3}
               onChange={(v) => edit((p) => updateSettings(p, { [s.key]: v }), `setting-${s.key}`)}
             />
           </label>

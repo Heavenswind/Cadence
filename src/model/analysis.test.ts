@@ -86,7 +86,30 @@ describe('pacing checks', () => {
     const p = sampleProject();
     beat(p, 'b13').intensity = 3;
     beat(p, 'b16').intensity = 3;
-    expect(messages(p)).toEqual(['warning: 54 min without a breather, from “Tower base” to “Dawn”.']);
+    expect(messages(p)).toEqual([
+      'warning: 54 min without a breather, from “Tower base” to “Dawn”.',
+      'warning: Boss “The Warden” has no breather before or after it.',
+    ]);
+  });
+
+  it('flags the same kind of beat too many times in a row', () => {
+    const p = sampleProject();
+    beat(p, 'b7').kind = 'puzzle';
+    beat(p, 'b8').kind = 'puzzle';
+    expect(messages(p)).toEqual(['warning: 3 puzzle beats in a row, from “Into the woods” to “Hollow tree”.']);
+    p.settings.sameKindBeats = 4;
+    expect(messages(p)).toEqual([]);
+    // Older files don't have the setting; 3 is assumed.
+    delete p.settings.sameKindBeats;
+    expect(messages(p)).toHaveLength(1);
+  });
+
+  it('flags a boss with no breather on either side', () => {
+    const p = sampleProject();
+    beat(p, 'b16').intensity = 3;
+    expect(messages(p)).toEqual(['warning: Boss “The Warden” has no breather before or after it.']);
+    beat(p, 'b14').intensity = 2;
+    expect(messages(p)).toEqual([]);
   });
 
   it('flags flat intensity', () => {

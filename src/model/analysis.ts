@@ -117,6 +117,8 @@ export function problems(p: Project): Problem[] {
   });
   for (const key of ['maxMinutesWithoutRest', 'maxNewPerBeat', 'maxGapMinutes', 'flatBeats'] as const)
     if (!(s[key] >= 0)) errors.push({ level: 'error', message: 'Settings cannot be negative.' });
+  if (s.sameKindBeats !== undefined && !(s.sameKindBeats >= 0))
+    errors.push({ level: 'error', message: 'Settings cannot be negative.' });
 
   // Teach → test → twist, and keeping elements fresh.
   for (const [id, history] of elementHistory(p)) {
@@ -204,6 +206,31 @@ export function problems(p: Project): Problem[] {
       });
     flatStart = i;
   }
+
+  // The same kind of beat too many times in a row (four puzzles back to back).
+  const sameKind = s.sameKindBeats ?? 3;
+  let kindStart = 0;
+  for (let i = 1; i <= p.beats.length; i++) {
+    if (i < p.beats.length && p.beats[i].kind === p.beats[kindStart].kind) continue;
+    const count = i - kindStart;
+    if (sameKind > 1 && count >= sameKind)
+      warnings.push({
+        level: 'warning',
+        message: `${count} ${p.beats[kindStart].kind} beats in a row, from ${beatName(kindStart)} to ${beatName(i - 1)}.`,
+        beatId: p.beats[kindStart].id,
+      });
+    kindStart = i;
+  }
+
+  // Boss fights with no relief on either side. Ending the game on a boss is a fine climax.
+  p.beats.forEach((b, i) => {
+    if (b.kind !== 'boss') return;
+    const calmBefore = i > 0 && p.beats[i - 1].intensity <= s.restAtMost;
+    const after = p.beats[i + 1];
+    const calmAfter = !after || after.intensity <= s.restAtMost;
+    if (!calmBefore && !calmAfter)
+      warnings.push({ level: 'warning', message: `Boss ${beatName(i)} has no breather before or after it.`, beatId: b.id });
+  });
 
   return [...errors, ...warnings];
 }

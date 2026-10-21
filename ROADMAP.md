@@ -20,8 +20,8 @@ Work I plan to do, roughly in order. Effort estimates are rough.
 
 ## Checks (≈5 h)
 
-- [ ] The same beat type too many times in a row (four puzzles back to back)
-- [ ] Boss beats without a breather before or after
+- [x] The same beat type too many times in a row (four puzzles back to back)
+- [x] Boss beats without a breather before or after
 - [ ] Per-act rules (a tutorial act may teach faster)
 - [ ] Choose which checks are warnings, errors or off
 - [ ] Suggestions: where a reminder beat would fix an element that's forgotten
