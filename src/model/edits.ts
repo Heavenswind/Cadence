@@ -30,6 +30,17 @@ export function addBeat(p: Project, afterId?: string | null): { project: Project
   return { project: { ...p, beats }, id: beat.id };
 }
 
+/** Inserts a copy of the beat right after it, with its own id and a numbered title. */
+export function duplicateBeat(p: Project, id: string): { project: Project; id: string } {
+  const at = p.beats.findIndex((b) => b.id === id);
+  if (at < 0) return { project: p, id };
+  const source = p.beats[at];
+  const copy: Beat = { ...source, id: uid(), title: uniqueName(source.title, p.beats.map((b) => b.title)), uses: { ...source.uses } };
+  const beats = [...p.beats];
+  beats.splice(at + 1, 0, copy);
+  return { project: { ...p, beats }, id: copy.id };
+}
+
 export function updateBeat(p: Project, id: string, patch: Partial<Omit<Beat, 'id'>>): Project {
   return { ...p, beats: p.beats.map((b) => (b.id === id ? { ...b, ...patch } : b)) };
 }

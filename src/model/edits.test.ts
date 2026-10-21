@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { problems } from './analysis';
-import { addBeat, addElement, cycleUse, moveBeat, moveElement, removeElement, setUse, uniqueName } from './edits';
+import { addBeat, addElement, cycleUse, duplicateBeat, moveBeat, moveElement, removeElement, setUse, uniqueName } from './edits';
 import { commit, historyOf, undo } from './history';
 import { sampleProject } from './project';
 
@@ -12,6 +12,17 @@ describe('beat edits', () => {
     const end = addBeat(project);
     expect(end.project.beats.at(-1)!.id).toBe(end.id);
     expect(end.project.beats.at(-1)!.title).toBe('New beat 2');
+  });
+
+  it('duplicates a beat right after itself, with a fresh id and a numbered title', () => {
+    const p = sampleProject();
+    const { project, id } = duplicateBeat(p, 'b2');
+    expect(project.beats.map((b) => b.id).slice(1, 4)).toEqual(['b2', id, 'b3']);
+    const copy = project.beats[2];
+    expect(copy).toMatchObject({ title: 'Rooftops 2', act: 'Act 1', kind: 'explore', minutes: 12 });
+    expect(copy.uses).toEqual(p.beats[1].uses);
+    expect(copy.uses).not.toBe(project.beats[1].uses);
+    expect(duplicateBeat(p, 'nope').project).toBe(p);
   });
 
   it('moves beats and leaves the ends alone', () => {

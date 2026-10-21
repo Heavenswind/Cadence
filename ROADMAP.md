@@ -16,7 +16,7 @@ Work I plan to do, roughly in order. Effort estimates are rough.
 - [ ] Notes per beat for art, audio and tech needs, with a column filter
 - [ ] Filter element columns by kind (mechanics, enemies, tools)
 - [ ] Keyboard navigation between cells, like a spreadsheet
-- [ ] Duplicate a beat
+- [x] Duplicate a beat
 
 ## Checks (≈5 h)
 

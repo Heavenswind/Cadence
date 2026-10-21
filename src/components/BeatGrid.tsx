@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { addBeat, cycleUse, moveBeat, removeBeat, updateBeat } from '../model/edits';
+import { addBeat, cycleUse, duplicateBeat, moveBeat, removeBeat, updateBeat } from '../model/edits';
 import { BEAT_KINDS, type Beat, type BeatKind, type Project } from '../model/types';
 import { useEditor, useProject } from '../store';
 import { KIND_COLOR, KIND_LABEL, USE_COLOR } from '../theme';
@@ -97,6 +97,19 @@ function BeatRow({ project, beat, index, newAct }: { project: Project; beat: Bea
           }}
         >
           +
+        </button>
+        <button
+          className="icon"
+          aria-label="Duplicate this beat"
+          title="Duplicate this beat"
+          onClick={(e) => {
+            e.stopPropagation();
+            const { project: next, id } = duplicateBeat(useEditor.getState().history.present, beat.id);
+            edit(() => next);
+            select(id);
+          }}
+        >
+          ⧉
         </button>
         <button className="icon danger" aria-label="Delete beat" onClick={() => edit((p) => removeBeat(p, beat.id))}>
           ×
