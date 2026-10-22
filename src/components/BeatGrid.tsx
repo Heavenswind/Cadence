@@ -73,6 +73,14 @@ function BeatRow({ project, beat, index, newAct }: { project: Project; beat: Bea
       <td>
         <TextInput className="story" aria-label="Story beat" value={beat.story} onChange={(story) => set({ story }, 'story')} />
       </td>
+      <td>
+        <TextInput
+          className="notes"
+          aria-label="Notes"
+          value={beat.notes ?? ''}
+          onChange={(notes) => set({ notes: notes || undefined }, 'notes')}
+        />
+      </td>
       <td className="row-actions">
         <button className="icon" aria-label="Move up" disabled={index === 0} onClick={() => edit((p) => moveBeat(p, beat.id, -1))}>
           ↑
@@ -154,6 +162,7 @@ export function BeatGrid() {
               ))}
               <th>Setting</th>
               <th>Story</th>
+              <th title="Working notes; not part of the chart">Notes</th>
               <th />
             </tr>
           </thead>

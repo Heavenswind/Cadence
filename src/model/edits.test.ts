@@ -16,10 +16,11 @@ describe('beat edits', () => {
 
   it('duplicates a beat right after itself, with a fresh id and a numbered title', () => {
     const p = sampleProject();
+    p.beats[1] = { ...p.beats[1], notes: 'tighten the chase' };
     const { project, id } = duplicateBeat(p, 'b2');
     expect(project.beats.map((b) => b.id).slice(1, 4)).toEqual(['b2', id, 'b3']);
     const copy = project.beats[2];
-    expect(copy).toMatchObject({ title: 'Rooftops 2', act: 'Act 1', kind: 'explore', minutes: 12 });
+    expect(copy).toMatchObject({ title: 'Rooftops 2', act: 'Act 1', kind: 'explore', minutes: 12, notes: 'tighten the chase' });
     expect(copy.uses).toEqual(p.beats[1].uses);
     expect(copy.uses).not.toBe(project.beats[1].uses);
     expect(duplicateBeat(p, 'nope').project).toBe(p);

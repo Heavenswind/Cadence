@@ -13,7 +13,8 @@ Work I plan to do, roughly in order. Effort estimates are rough.
 ## Beat chart (≈6 h)
 
 - [ ] Drag-and-drop row reordering, and collapsing acts
-- [ ] Notes per beat for art, audio and tech needs, with a column filter
+- [x] Notes per beat for art, audio and tech needs
+- [ ] Column filter for the beat grid
 - [ ] Filter element columns by kind (mechanics, enemies, tools)
 - [ ] Keyboard navigation between cells, like a spreadsheet
 - [x] Duplicate a beat

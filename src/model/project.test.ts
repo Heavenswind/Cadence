@@ -7,6 +7,9 @@ describe('project files', () => {
   it('accepts the sample and an empty project after a JSON round trip', () => {
     expect(() => assertProject(roundTrip(sampleProject()))).not.toThrow();
     expect(() => assertProject(roundTrip(emptyProject()))).not.toThrow();
+    const withNotes = sampleProject();
+    withNotes.beats[0].notes = 'placeholder art in the attic';
+    expect(() => assertProject(roundTrip(withNotes))).not.toThrow();
   });
 
   it('only uses elements the sample defines', () => {
@@ -33,5 +36,8 @@ describe('project files', () => {
     const r = roundTrip(sampleProject()) as { settings?: unknown };
     delete r.settings;
     expect(() => assertProject(r)).toThrow('settings is missing');
+    const s = roundTrip(sampleProject());
+    (s.beats[1] as { notes?: unknown }).notes = 7;
+    expect(() => assertProject(s)).toThrow('beats[1].notes');
   });
 });

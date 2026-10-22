@@ -83,6 +83,7 @@ table.beats input.act { width: 72px; }
 table.beats input.title { width: 150px; }
 table.beats input.setting { width: 120px; }
 table.beats input.story { width: 220px; }
+table.beats input.notes { width: 160px; }
 table.beats select.intensity { width: 48px; }
 table.beats .row-actions { white-space: nowrap; }
 table.beats .row-actions button { margin-left: 2px; }

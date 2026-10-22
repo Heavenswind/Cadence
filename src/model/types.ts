@@ -36,6 +36,8 @@ export interface Beat {
   setting: string;
   /** What happens in the story here. */
   story: string;
+  /** Working notes for the designer (reminders, cut ideas). Older files leave it out. */
+  notes?: string;
   /** Element id → how this beat uses it. Elements a beat doesn't feature are left out. */
   uses: Record<string, Use>;
 }

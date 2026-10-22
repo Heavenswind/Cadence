@@ -113,6 +113,7 @@ export function assertProject(data: unknown): asserts data is Project {
     check(isObject(b) && typeof b.id === 'string' && typeof b.title === 'string', at, 'needs an id and a title');
     check(BEAT_KINDS.includes(b.kind), `${at}.kind`, `must be one of ${BEAT_KINDS.join(', ')}`);
     for (const key of ['act', 'setting', 'story'] as const) check(typeof b[key] === 'string', `${at}.${key}`, 'is not text');
+    check(b.notes === undefined || typeof b.notes === 'string', `${at}.notes`, 'is not text');
     for (const key of ['minutes', 'intensity'] as const) check(typeof b[key] === 'number', `${at}.${key}`, 'is not a number');
     check(isObject(b.uses), `${at}.uses`, 'is missing');
     for (const [id, use] of Object.entries(b.uses)) check(USES.includes(use), `${at}.uses.${id}`, 'must be teach, test or twist');
