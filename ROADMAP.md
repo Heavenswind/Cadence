@@ -12,7 +12,8 @@ Work I plan to do, roughly in order. Effort estimates are rough.
 
 ## Beat chart (≈6 h)
 
-- [ ] Drag-and-drop row reordering, and collapsing acts
+- [x] Drag-and-drop row reordering (the row number is the handle)
+- [ ] Collapsing acts
 - [x] Notes per beat for art, audio and tech needs
 - [ ] Column filter for the beat grid
 - [ ] Filter element columns by kind (mechanics, enemies, tools)

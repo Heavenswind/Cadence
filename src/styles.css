@@ -76,6 +76,7 @@ table.beats th { text-align: left; font-weight: 500; font-size: 12px; color: var
 table.beats th.element-head { max-width: 78px; overflow: hidden; text-overflow: ellipsis; color: var(--text-2); }
 table.beats td { padding: 3px 4px; border-bottom: 1px solid var(--grid); }
 table.beats .num { text-align: right; font-variant-numeric: tabular-nums; }
+table.beats .drag-handle { cursor: grab; }
 table.beats tr.new-act td { border-top: 2px solid var(--axis); }
 table.beats tr.selected td { background: #262338; }
 table.beats input, table.beats select { padding: 3px 6px; }

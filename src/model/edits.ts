@@ -54,6 +54,18 @@ export function moveBeat(p: Project, id: string, by: -1 | 1): Project {
   return beats === p.beats ? p : { ...p, beats };
 }
 
+/** Moves a beat to a position in the list (drag-and-drop). Out-of-range targets clamp to the ends. */
+export function moveBeatTo(p: Project, id: string, to: number): Project {
+  const from = p.beats.findIndex((b) => b.id === id);
+  if (from < 0) return p;
+  const target = Math.max(0, Math.min(p.beats.length - 1, to));
+  if (target === from) return p;
+  const beats = [...p.beats];
+  const [beat] = beats.splice(from, 1);
+  beats.splice(target, 0, beat);
+  return { ...p, beats };
+}
+
 export function setUse(p: Project, beatId: string, elementId: string, use: Use | null): Project {
   return {
     ...p,

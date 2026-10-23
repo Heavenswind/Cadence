@@ -1,11 +1,19 @@
 import { useEffect, useRef } from 'react';
-import { addBeat, cycleUse, duplicateBeat, moveBeat, removeBeat, updateBeat } from '../model/edits';
+import { addBeat, cycleUse, duplicateBeat, moveBeat, moveBeatTo, removeBeat, updateBeat } from '../model/edits';
 import { BEAT_KINDS, type Beat, type BeatKind, type Project } from '../model/types';
 import { useEditor, useProject } from '../store';
 import { KIND_COLOR, KIND_LABEL, USE_COLOR } from '../theme';
 import { NumberInput, TextInput } from './fields';
 
-function BeatRow({ project, beat, index, newAct }: { project: Project; beat: Beat; index: number; newAct: boolean }) {
+/** Row drag-and-drop: the row number is the handle; dropping on a row moves the beat to its place. */
+interface RowDrag {
+  start: (id: string) => void;
+  end: () => void;
+  over: (e: React.DragEvent) => void;
+  drop: (index: number) => void;
+}
+
+function BeatRow({ project, beat, index, newAct, drag }: { project: Project; beat: Beat; index: number; newAct: boolean; drag: RowDrag }) {
   const edit = useEditor((s) => s.edit);
   const select = useEditor((s) => s.select);
   const selected = useEditor((s) => s.selectedId === beat.id);
@@ -18,8 +26,27 @@ function BeatRow({ project, beat, index, newAct }: { project: Project; beat: Bea
   }, [selected]);
 
   return (
-    <tr ref={row} className={`${selected ? 'selected' : ''}${newAct ? ' new-act' : ''}`} onFocus={() => select(beat.id)} onClick={() => select(beat.id)}>
-      <td className="num muted">{index + 1}</td>
+    <tr
+      ref={row}
+      className={`${selected ? 'selected' : ''}${newAct ? ' new-act' : ''}`}
+      onFocus={() => select(beat.id)}
+      onClick={() => select(beat.id)}
+      onDragOver={drag.over}
+      onDrop={() => drag.drop(index)}
+    >
+      <td
+        className="num muted drag-handle"
+        title="Drag to reorder"
+        draggable
+        onDragStart={(e) => {
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', beat.id);
+          drag.start(beat.id);
+        }}
+        onDragEnd={drag.end}
+      >
+        {index + 1}
+      </td>
       <td>
         <TextInput className="act" aria-label="Act" value={beat.act} onChange={(act) => set({ act }, 'act')} />
       </td>
@@ -131,6 +158,22 @@ export function BeatGrid() {
   const project = useProject();
   const edit = useEditor((s) => s.edit);
   const select = useEditor((s) => s.select);
+  const dragId = useRef<string | null>(null);
+  const drag: RowDrag = {
+    start: (id) => (dragId.current = id),
+    end: () => (dragId.current = null),
+    over: (e) => {
+      if (dragId.current) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      }
+    },
+    drop: (index) => {
+      const id = dragId.current;
+      dragId.current = null;
+      if (id) edit((p) => moveBeatTo(p, id, index));
+    },
+  };
 
   return (
     <section className="card">
@@ -168,7 +211,7 @@ export function BeatGrid() {
           </thead>
           <tbody>
             {project.beats.map((b, i) => (
-              <BeatRow key={b.id} project={project} beat={b} index={i} newAct={i > 0 && project.beats[i - 1].act !== b.act} />
+              <BeatRow key={b.id} project={project} beat={b} index={i} newAct={i > 0 && project.beats[i - 1].act !== b.act} drag={drag} />
             ))}
           </tbody>
         </table>

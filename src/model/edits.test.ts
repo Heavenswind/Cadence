@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { problems } from './analysis';
-import { addBeat, addElement, cycleUse, duplicateBeat, moveBeat, moveElement, removeElement, setUse, uniqueName } from './edits';
+import { addBeat, addElement, cycleUse, duplicateBeat, moveBeat, moveBeatTo, moveElement, removeElement, setUse, uniqueName } from './edits';
 import { commit, historyOf, undo } from './history';
 import { sampleProject } from './project';
 
@@ -31,6 +31,15 @@ describe('beat edits', () => {
     expect(moveBeat(p, 'b2', -1).beats.slice(0, 2).map((b) => b.id)).toEqual(['b2', 'b1']);
     expect(moveBeat(p, 'b1', -1)).toBe(p);
     expect(moveBeat(p, 'b16', 1)).toBe(p);
+  });
+
+  it('drags a beat to any position, clamping to the ends', () => {
+    const p = sampleProject();
+    expect(moveBeatTo(p, 'b1', 3).beats.slice(0, 4).map((b) => b.id)).toEqual(['b2', 'b3', 'b4', 'b1']);
+    expect(moveBeatTo(p, 'b4', 0).beats.slice(0, 4).map((b) => b.id)).toEqual(['b4', 'b1', 'b2', 'b3']);
+    expect(moveBeatTo(p, 'b2', 999).beats.at(-1)!.id).toBe('b2');
+    expect(moveBeatTo(p, 'b2', 1)).toBe(p);
+    expect(moveBeatTo(p, 'nope', 0)).toBe(p);
   });
 
   it('cycles a cell through teach, test, twist and back to empty', () => {
